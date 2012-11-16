@@ -1,0 +1,18 @@
+<div class="container-fluid well">
+  <div class="row">
+    <form class="span3 adjust">
+      <strong class="label">Enter an branch name:</strong>
+
+      <div class="input-append">
+        <input type="text" class="search-query branch <%= collection.status %>"
+        name="branch" value="<%= collection.branch || "master" %>"><button
+          class="btn">Search</button>
+      </div>
+    </form>
+
+    <div class="span9">
+      <strong class="label">Select a user:</strong>
+      <ul class="user-list clearfix unstyled"></ul>
+    </div>
+  </div>
+</div>
