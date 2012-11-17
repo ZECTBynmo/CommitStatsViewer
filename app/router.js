@@ -103,6 +103,7 @@ function(app, PunchCard, User) {
           // Set up the users.
           users: new User.Collection(),
           committerInfo: globalCommitterInfo,
+          name:"all:commits",
           branch:"master"
         };
 
