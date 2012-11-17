@@ -2,7 +2,9 @@ var git = require("gift"),
 	async = require("async"),
 	io = require('socket.io').listen(9002);
 
-var repoPath = "D:/Projects/node-core-audio/.git";
+io.set("log level",1);
+
+var repoPath = "D:/iZotope/.git";
 var repo = git( repoPath );
 console.log( "READING REPO " + repoPath );
 
