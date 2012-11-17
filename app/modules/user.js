@@ -65,7 +65,7 @@ function(app, Backbone, Repo) {
 	changeUser: function(ev) {
       var model = this.model;
       var branch = model.branch;
-      var name = model.name;
+      var name = model.name + ":" + model.email;
 
       app.router.go("branch", branch, "user", name);
     },
@@ -118,6 +118,7 @@ function(app, Backbone, Repo) {
 
     initialize: function( model ) {
       this.committerInfo = model.committerInfo;
+      this.branch = model.branch;
       this.options.users.on("reset", this.render, this);
 
       this.options.users.on("fetch", function() {
