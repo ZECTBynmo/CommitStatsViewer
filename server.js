@@ -54,12 +54,14 @@ var getCommitInfos = function( branchName, numCommits, startCommit, callback ) {
 					name: author.name,
 					email: author.email,
 					numCommits: 0,
-					histogram: dummyHistogram
+					histogram: dummyHistogram,
+					commitTimes: []
 				}
 			}
 			
 			// Update this user's commit history
 			userEntry.histogram[time.getHours()]++;
+			userEntry.commitTimes.push( time );
 			userEntry.numCommits++;
 			
 			// Push this user back into the map
@@ -75,17 +77,7 @@ function onError( error ) {
 }
 
 exports.init = function() {
-	/*
-	// setup the server
-	var server = connect();
 
-	// setup socketio
-	var io = socketio.listen(server);
-	io.enable('browser client minification');
-	io.enable('browser client etag');
-	io.enable('browser client gzip');
-	io.set('log level', 5);
-*/
 	io.sockets.on('connection', function (socket) {
 		socket.on('request repository info', function (data) {
 			console.log( "User requested repository info" );
