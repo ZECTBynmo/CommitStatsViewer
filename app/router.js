@@ -8,7 +8,8 @@ define([
 ],
 
 function(app, PunchCard, User) {
-  var globalCommitterInfo;
+  var globalCommitterInfo,
+      globalUserName;
 
   // Defining the application router, you can attach sub routers here.
   var Router = Backbone.Router.extend({
@@ -53,6 +54,7 @@ function(app, PunchCard, User) {
       // Set the organization.
       this.branch = branch;
       this.userName = userName;
+      globalUserName = decodeURIComponent(userName);
 
       var punchCardItem = new PunchCard.Model({
           committerInfo: globalCommitterInfo,
@@ -103,7 +105,7 @@ function(app, PunchCard, User) {
           // Set up the users.
           users: new User.Collection(),
           committerInfo: globalCommitterInfo,
-          name:"all:commits",
+          name: globalUserName || "all:commits",
           branch:"master"
         };
 
@@ -111,7 +113,10 @@ function(app, PunchCard, User) {
         _.extend(this, collections);
         this.collections = collections;
 
-        var punchCardItem = new PunchCard.Model( {committerInfo:globalCommitterInfo} );
+        var punchCardItem = new PunchCard.Model( {
+          committerInfo:globalCommitterInfo,
+          name: globalUserName || "all:commits"
+        });
 
         // Use main layout and set Views.
         app.useLayout().setViews({
