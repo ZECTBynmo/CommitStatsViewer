@@ -34,7 +34,7 @@ function(app, Backbone, Repo) {
     afterRender: function() {
       var canvasElement = document.getElementById("mainCanvas");
 
-      var testUser = this.committerInfo["unknown:ZECTBynmo@.(none)"];
+      var testUser = this.committerInfo[this.model.attributes.name];
 
       var graph = new PunchCardGraph( testUser );
     }
