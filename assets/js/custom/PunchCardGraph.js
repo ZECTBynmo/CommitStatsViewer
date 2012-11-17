@@ -95,7 +95,7 @@ PunchCardGraph.prototype.draw = function() {
 	var hourLabelSpacing = ( canvas.width - BORDER_WIDTH ) / 24;
 	for( var iHour=0; iHour<24; ++iHour ) {
 		var xLoc = BORDER_WIDTH + iHour*hourLabelSpacing + hourLabelSpacing/2 - 3,
-			labelText= iHour > 11 ? iHour - 12: iHour;
+			labelText= iHour > 12 ? iHour - 12: iHour;
 		context.fillText( labelText, xLoc, canvas.height - 15 );
 	}
 
