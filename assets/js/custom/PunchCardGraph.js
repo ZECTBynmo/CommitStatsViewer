@@ -16,12 +16,34 @@ var BORDER_WIDTH = 30;
 //////////////////////////////////////////////////////////////////////////
 // Constructor
 function PunchCardGraph( userInfo ) {
+	var _this = this;
+
 	this.canvas = document.getElementById( "mainCanvas" );
 	this.context = this.canvas.getContext("2d");
 	this.commits = userInfo.commitTimes;
 	this.histogram = [];		// numCommits[day][hour]
 	this.amplitudes = [];
 	this.maxHistogramValue = 0;
+	this.toolTip = new ToolTip( "a", false );
+
+	// Setup our tooltip
+	this.canvas.onmousemove = function(event) {
+		var parentOffset = $("#mainCanvas").parent().offset(); 
+
+		var xChunk = (_this.canvas.width - BORDER_WIDTH) / 24,
+			yChunk = (_this.canvas.height - BORDER_WIDTH) / 7;
+
+        var xLoc = event.pageX - parentOffset.left,
+        	yLoc = event.pageY - parentOffset.top + BORDER_WIDTH/2;
+
+    	var iDay = Math.floor( (yLoc - BORDER_WIDTH) / yChunk ),
+    		iHour = Math.floor( (xLoc - BORDER_WIDTH) / xChunk );
+
+        if( xLoc > BORDER_WIDTH && xLoc < _this.canvas.width - BORDER_WIDTH && yLoc > BORDER_WIDTH && yLoc < _this.canvas.height - BORDER_WIDTH )
+        	_this.toolTip.Show( event, _this.histogram[iDay][iHour] );
+    	else
+    		_this.toolTip.Hide( event );
+	}
 
 	// Initialize our amplutudes and histogram arrays
 	this.initData();
@@ -73,7 +95,7 @@ PunchCardGraph.prototype.draw = function() {
 	var hourLabelSpacing = ( canvas.width - BORDER_WIDTH ) / 24;
 	for( var iHour=0; iHour<24; ++iHour ) {
 		var xLoc = BORDER_WIDTH + iHour*hourLabelSpacing + hourLabelSpacing/2 - 3,
-			labelText= iHour > 11 ? iHour - 12 + 1 : iHour + 1;
+			labelText= iHour > 11 ? iHour - 12: iHour;
 		context.fillText( labelText, xLoc, canvas.height - 15 );
 	}
 
@@ -101,24 +123,24 @@ PunchCardGraph.prototype.draw = function() {
 // Initializes our histogram and amplitudes after creation
 PunchCardGraph.prototype.initData = function() {
 	for( var iDay=0; iDay<7; ++iDay ) {
-		var newDay = [];
+		var newHistDay = [],
+			newAmpDay = [];
 
 		for( var iHour=0; iHour<24; ++iHour ) {
-			newDay.push( 0 );
+			newHistDay.push( 0 );
+			newAmpDay.push( 0 );
 		}
 
-		this.histogram[iDay] = newDay;
-		this.amplitudes[iDay] = newDay;
+		this.histogram[iDay] = newHistDay;
+		this.amplitudes[iDay] = newAmpDay;
 	}
 } // end PunchCardGraph.initData()
 
 
 //////////////////////////////////////////////////////////////////////////
 // Create a histogram for a set of commit times
-PunchCardGraph.prototype.createHistogram = function( commitTimes ) {
+PunchCardGraph.prototype.createHistogram = function() {
 	this.clearHistogram();
-
-	var times = typeof(commitTimes) == "undefined" ? this.commitTimes : commitTimes;
 
 	for( var iCommit=0; iCommit<this.commits.length; ++iCommit ) {
 		var time = new Date( this.commits[iCommit] );
