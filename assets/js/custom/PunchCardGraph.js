@@ -58,13 +58,13 @@ PunchCardGraph.prototype.draw = function() {
 	var dayTextSpacing = ( canvas.height - BORDER_WIDTH ) / 7, 
 		xDayLabels = 0;
 
-	context.fillText( "Mon", xDayLabels, dayTextSpacing * 0 + dayTextSpacing/2 );
-	context.fillText( "Tue", xDayLabels, dayTextSpacing * 1 + dayTextSpacing/2 );
-	context.fillText( "Wed", xDayLabels, dayTextSpacing * 2 + dayTextSpacing/2 );
-	context.fillText( "Thu", xDayLabels, dayTextSpacing * 3 + dayTextSpacing/2 );
-	context.fillText( "Fri", xDayLabels, dayTextSpacing * 4 + dayTextSpacing/2 );
-	context.fillText( "Sat", xDayLabels, dayTextSpacing * 5 + dayTextSpacing/2 );
-	context.fillText( "Sun", xDayLabels, dayTextSpacing * 6 + dayTextSpacing/2 );
+	context.fillText( "Sun", xDayLabels, dayTextSpacing * 0 + dayTextSpacing/2 + 4 );
+	context.fillText( "Mon", xDayLabels, dayTextSpacing * 1 + dayTextSpacing/2 + 4 );
+	context.fillText( "Tue", xDayLabels, dayTextSpacing * 2 + dayTextSpacing/2 + 4 );
+	context.fillText( "Wed", xDayLabels, dayTextSpacing * 3 + dayTextSpacing/2 + 4 );
+	context.fillText( "Thu", xDayLabels, dayTextSpacing * 4 + dayTextSpacing/2 + 4 );
+	context.fillText( "Fri", xDayLabels, dayTextSpacing * 5 + dayTextSpacing/2 + 4 );
+	context.fillText( "Sat", xDayLabels, dayTextSpacing * 6 + dayTextSpacing/2 + 4 );
 
 	// Place our hour legend
 	context.fillText( "Hour", canvas.width/2, canvas.height );
