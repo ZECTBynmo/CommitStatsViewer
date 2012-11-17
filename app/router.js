@@ -15,9 +15,7 @@ function(app, PunchCard, User) {
       "": "index",
       "branch/:name": "branch",
       "branch/:name": "branch",
-      "org/:name": "org",
-      "org/:org/user/:name": "user",
-      "org/:org/user/:user/repo/:name": "punchcard"
+      "branch/:name/user/:name": "punchcard"
     },
 
     index: function() {
@@ -35,17 +33,6 @@ function(app, PunchCard, User) {
       // Fetch the data.
       this.users.fetch();
     },
-	
-	org: function(name) {
-      // Reset the state and render.
-      this.reset();
-
-      // Set the organization.
-      this.users.org = name;
-
-      // Fetch the data.
-      this.users.fetch();
-    },
 
     user: function(org, name) {
       // Reset the state and render.
@@ -58,15 +45,21 @@ function(app, PunchCard, User) {
       this.users.fetch();
     },
 
-    punchcard: function(org, user, name) {
+    punchcard: function(branch, userName) {
       // Reset the state and render.
       this.reset();
 
       // Set the organization.
-      this.users.org = org;
+      this.branch = branch;
+      this.userName = userName;
 
-      // Fetch the data
-      this.users.fetch();
+      var punchCardItem = new PunchCard.Model( {} );
+
+      // Use main layout and set Views.
+      app.useLayout().setViews({
+        ".users": new User.Views.List(collections),
+        ".punchcard": new PunchCard.Views.Item({model:punchCardItem})
+      }).render();
     },
 
     // Shortcut for building a url.
@@ -85,19 +78,30 @@ function(app, PunchCard, User) {
     },
 
     initialize: function() {
-      var collections = {
-        // Set up the users.
-        users: new User.Collection()
-      };
+      var socket = io.connect('http://localhost:9002');
 
-      // Ensure the router has references to the collections.
-      _.extend(this, collections);
+      socket.emit( "request repository info" );
 
-      // Use main layout and set Views.
-      app.useLayout().setViews({
-        ".users": new User.Views.List(collections),
-		".punchcard": new PunchCard.Views.List(collections)
-      }).render();
+      socket.on("repository info", function(data) { 
+        var committerInfo = data.committerInfo;
+
+        var collections = {
+          // Set up the users.
+          users: new User.Collection(),
+          committerInfo: committerInfo
+        };
+
+        // Ensure the router has references to the collections.
+        _.extend(this, collections);
+
+        var punchCardItem = new PunchCard.Model( {committerInfo:committerInfo} );
+
+        // Use main layout and set Views.
+        app.useLayout().setViews({
+          ".users": new User.Views.List(collections),
+          ".punchcard": new PunchCard.Views.Item({model:punchCardItem})
+        }).render();
+      }); // end on "repository info"
     }
   });
 
