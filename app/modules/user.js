@@ -71,8 +71,7 @@ function(app, Backbone, Repo) {
     },
 	
     initialize: function() {
-		this.render();
-      //this.model.on("change", this.render, this);
+      this.model.on("change", this.render, this);
     }
   });
 
@@ -117,7 +116,8 @@ function(app, Backbone, Repo) {
       this.$("input.invalid").focus();
     },
 
-    initialize: function() {
+    initialize: function( model ) {
+      this.committerInfo = model.committerInfo;
       this.options.users.on("reset", this.render, this);
 
       this.options.users.on("fetch", function() {
@@ -129,16 +129,8 @@ function(app, Backbone, Repo) {
       "submit form": "updateBranch"
     },
 
-    updateBranch: function(ev) {
-	  var socket = io.connect('http://localhost:9002');
-	  var _this = this;
-	  socket.emit( "request repository info" );
-	  socket.on("repository info", function(data) { 
-	    _this.committerInfo = data.committerInfo;
-		_this.render();
-	  });
-	  
-	  this.branch = this.$(".branch").val();
+    updateBranch: function(ev) {	  
+	   this.branch = this.$(".branch").val();
 	  
       app.router.go("branch", this.branch);
 
