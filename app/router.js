@@ -8,6 +8,7 @@ define([
 ],
 
 function(app, PunchCard, User) {
+  var globalCommitterInfo;
 
   // Defining the application router, you can attach sub routers here.
   var Router = Backbone.Router.extend({
@@ -53,13 +54,26 @@ function(app, PunchCard, User) {
       this.branch = branch;
       this.userName = userName;
 
-      var punchCardItem = new PunchCard.Model( {} );
+      var punchCardItem = new PunchCard.Model({
+          committerInfo: globalCommitterInfo,
+          name: userName,
+          branch: branch
+      });
 
       // Use main layout and set Views.
-      app.useLayout().setViews({
-        ".users": new User.Views.List(collections),
-        ".punchcard": new PunchCard.Views.Item({model:punchCardItem})
-      }).render();
+      if( typeof(globalCommitterInfo) != "undefined" ) {
+        var collections = {
+          // Set up the users.
+          users: new User.Collection(),
+          committerInfo: globalCommitterInfo,
+          branch:"master"
+        };
+
+        app.useLayout().setViews({
+          ".users": new User.Views.List(collections),
+          ".punchcard": new PunchCard.Views.Item({model:punchCardItem})
+        }).render();
+      }
     },
 
     // Shortcut for building a url.
@@ -69,7 +83,7 @@ function(app, PunchCard, User) {
 
     reset: function() {
       // Reset collections to initial state.
-      if (this.users.length) {
+      if (typeof(this.users) != "undefined" && this.users.length) {
         this.users.reset();
       }
 
@@ -83,18 +97,20 @@ function(app, PunchCard, User) {
       socket.emit( "request repository info" );
 
       socket.on("repository info", function(data) { 
-        var committerInfo = data.committerInfo;
+        globalCommitterInfo = data.committerInfo;
 
         var collections = {
           // Set up the users.
           users: new User.Collection(),
-          committerInfo: committerInfo
+          committerInfo: globalCommitterInfo,
+          branch:"master"
         };
 
         // Ensure the router has references to the collections.
         _.extend(this, collections);
+        this.collections = collections;
 
-        var punchCardItem = new PunchCard.Model( {committerInfo:committerInfo} );
+        var punchCardItem = new PunchCard.Model( {committerInfo:globalCommitterInfo} );
 
         // Use main layout and set Views.
         app.useLayout().setViews({
