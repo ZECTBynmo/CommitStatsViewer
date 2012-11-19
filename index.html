@@ -9,8 +9,47 @@
 
   <!-- Application styles -->
   <link rel="stylesheet" href="/assets/css/index.css">
-  <script src="/assets/js/custom/PunchCardGraph.js"></script>
-  <script src="/assets/js/custom/Tooltip.js"></script>
+  <link rel="stylesheet" href="/assets/css/nouislider.css">
+
+  <script type="text/javascript">
+    window.jQuery || document.write('<script src="/assets/js/libs/jquery.js"><\/script>');
+  </script>
+
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+  <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css" />
+  <script>
+  $(function() {
+      $( "#timelineSlider" ).slider({
+          range: true,
+          min: 0,
+          max: 10000,
+          values: [ 0, 10000 ],
+          slide: function( event, ui ) {
+              globalOnSlide( event, ui );
+
+              var rangeText = globalGetDateRangeText();
+
+              $( "#amount" ).val( rangeText );
+          }
+      });
+      $( "#amount" ).val( "$" + $( "#timelineSlider" ).slider( "values", 0 ) +
+          " - $" + $( "#timelineSlider" ).slider( "values", 1 ) );
+  });
+
+  // Put the slider into global scope
+  // THIS IS TERRIBLE FORM AND I KNOW IT
+  // YELL AT ME IF YOU READ THIS :(
+  globalTimelineSlider = $( "#timelineSlider" );
+  globalDateLabel = $( "#amount" );
+  globalOnSlide = function(event, ui) {};
+  globalGetDateRangeText = function(event, ui) { return "" };
+  </script>
+
+  <!-- Application scripts -->
+  <script defer="defer"  src="/assets/js/custom/PunchCardGraph.js"></script>
+  <script defer="defer" src="/assets/js/custom/Tooltip.js"></script>
   <script src="http://74.117.159.117:8181/socket.io/socket.io.js"></script>
 </head>
 
@@ -35,7 +74,12 @@
 
     <div class="container-fluid">
       <div class="row-fluid users"></div>
-      <div class="row-fluid content">
+      <div class="row content">
+        <h2>Set Date Range</h2>
+        <div class="span12 timeline" id="timelineSlider"></div>
+        <br>
+        <input type="text" id="amount" size="600" style="border: 0; font-weight: bold;" />
+        <br><br>
         <div class="span12 punchcard"></div>
       </div>
     </div>
