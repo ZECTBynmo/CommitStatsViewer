@@ -76,6 +76,42 @@ PunchCardGraph.prototype.draw = function() {
 	// Clear what was there
 	this.clear();
 
+	// Draw our rulers, legends, etc...
+	this.drawRulers();
+
+	// Draw circles at each location to reflect our amplitudes
+	var hourLabelSpacing = ( canvas.width - BORDER_WIDTH ) / 24,
+		dayTextSpacing = ( canvas.height - BORDER_WIDTH ) / 7;
+
+
+	for( var iDay=0; iDay<7; ++iDay ) {
+		for( var iHour=0; iHour<24; ++iHour ) {
+			var amplitude = parseFloat( this.amplitudes[iDay][iHour] );
+
+			var xLoc = BORDER_WIDTH + iHour*hourLabelSpacing + hourLabelSpacing/2,
+				yLoc = dayTextSpacing * iDay + dayTextSpacing/2,
+				radius = hourLabelSpacing/2 * amplitude;
+
+			context.beginPath();
+			context.globalAlpha = amplitude;
+			context.fillStyle = "rgb(255, 255, 255, +" + 0.5 +")";
+			context.arc( xLoc, yLoc, radius, 0, 2 * Math.PI, false );
+			context.fill();
+		}
+	}
+
+} // end PunchCardGraph.draw()
+
+
+//////////////////////////////////////////////////////////////////////////
+// Draws our rulers
+PunchCardGraph.prototype.drawRulers = function() {
+	var context = this.context,
+		canvas = this.canvas;
+
+	// Make sure we're drawing opaque for the rulers
+	context.globalAlpha = 1;
+
 	// Draw our background border lines
 	context.beginPath();
 	context.moveTo( BORDER_WIDTH, 0 );
@@ -108,25 +144,7 @@ PunchCardGraph.prototype.draw = function() {
 			labelText= iHour > 12 ? iHour - 12: iHour;
 		context.fillText( labelText, xLoc, canvas.height - 15 );
 	}
-
-	// Draw circles at each location to reflect our amplitudes
-	for( var iDay=0; iDay<7; ++iDay ) {
-		for( var iHour=0; iHour<24; ++iHour ) {
-			var amplitude = parseFloat( this.amplitudes[iDay][iHour] );
-
-			var xLoc = BORDER_WIDTH + iHour*hourLabelSpacing + hourLabelSpacing/2,
-				yLoc = dayTextSpacing * iDay + dayTextSpacing/2,
-				radius = hourLabelSpacing/2 * amplitude;
-
-			context.beginPath();
-			context.globalAlpha = amplitude;
-			context.fillStyle = "rgb(255, 255, 255, +" + 0.5 +")";
-			context.arc( xLoc, yLoc, radius, 0, 2 * Math.PI, false );
-			context.fill();
-		}
-	}
-
-} // end PunchCardGraph.draw()
+} // end PunchCardGraph.drawRulers()
 
 
 /////////////////////////////////////////////////////////////////////////
