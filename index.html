@@ -45,6 +45,17 @@
   globalDateLabel = $( "#amount" );
   globalOnSlide = function(event, ui) {};
   globalGetDateRangeText = function(event, ui) { return "" };
+
+  var _this = this;
+
+  globalResetSlider = function( range ) {
+    globalTimelineSlider.slider("values", 0, 0 );
+    globalTimelineSlider.slider("values", 0, 10000 );
+
+    var rangeText = globalGetDateRangeText();
+
+    $( "#amount" ).val( rangeText );
+  }
   </script>
 
   <!-- Application scripts -->
@@ -80,7 +91,7 @@
         <br>
         <input type="text" id="amount" size="600" style="border: 0; font-weight: bold;" />
         <br><br>
-        <div class="span12 punchcard"></div>
+        <div id="punchcard" class="span12 punchcard"></div>
       </div>
     </div>
 
