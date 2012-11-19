@@ -7,7 +7,10 @@
 /* ----------------------------------------------------------------------
                                                     Object Structures
 -------------------------------------------------------------------------
-	
+	range = {
+		min: somenumber,
+		max: somenumber
+	}
 */
 //////////////////////////////////////////////////////////////////////////
 // Namespace (lol)
@@ -25,6 +28,10 @@ function PunchCardGraph( userInfo ) {
 	this.amplitudes = [];
 	this.maxHistogramValue = 0;
 	this.toolTip = new ToolTip( "a", false );
+	this.range = {
+		min: 0,
+		max: this.commits.length-1	
+	};
 
 	// Setup our tooltip
 	this.canvas.onmousemove = function(event) {
@@ -65,6 +72,9 @@ function PunchCardGraph( userInfo ) {
 PunchCardGraph.prototype.draw = function() {
 	var context = this.context,
 		canvas = this.canvas;
+
+	// Clear what was there
+	this.clear();
 
 	// Draw our background border lines
 	context.beginPath();
@@ -142,7 +152,10 @@ PunchCardGraph.prototype.initData = function() {
 PunchCardGraph.prototype.createHistogram = function() {
 	this.clearHistogram();
 
-	for( var iCommit=0; iCommit<this.commits.length; ++iCommit ) {
+	for( var iCommit=this.range.min; iCommit<this.range.max; ++iCommit ) {
+		if( typeof(this.commits[iCommit]) == "undefined" )
+			continue;
+
 		var time = new Date( this.commits[iCommit] );
 
 		var hour = time.getHours(),
@@ -186,3 +199,53 @@ PunchCardGraph.prototype.clearHistogram = function() {
 		}
 	}
 } // end PunchCardGraph.clearHistogram()
+
+
+//////////////////////////////////////////////////////////////////////////
+// Sets the visible range min
+PunchCardGraph.prototype.setRange = function( min, max ) {
+	this.range.min = min;
+	this.range.max = max;
+
+	// Update our values
+	this.createHistogram();
+	this.calculateAmplitudes();
+
+	// Draw ourselves
+	this.draw();
+} // end PunchCardGraph.setRange()
+
+
+//////////////////////////////////////////////////////////////////////////
+// Sets the visible range min
+PunchCardGraph.prototype.getRange = function() {
+	return this.range;
+} // end PunchCardGraph.setRange()
+
+
+//////////////////////////////////////////////////////////////////////////
+// Returns the max of our original range
+PunchCardGraph.prototype.getTotalMax = function() {
+	return this.commits.length-1;
+} // end PunchCardGraph.getTotalMax()
+
+
+//////////////////////////////////////////////////////////////////////////
+// Sets the visible range min
+PunchCardGraph.prototype.clear = function() {
+	var context = this.context,
+		canvas = this.canvas;
+
+	// Store the current transformation matrix
+	context.save();
+
+	// Use the identity matrix while clearing the canvas
+	context.setTransform(1, 0, 0, 1, 0, 0);
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	// Restore the transform
+	context.restore();
+
+	// Reset our max histogram value
+	this.maxHistogramValue = 0;
+} // end PunchCardGraph.clear()
