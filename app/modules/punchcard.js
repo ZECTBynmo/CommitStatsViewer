@@ -40,18 +40,6 @@ function(app, Backbone, Repo) {
 
       var graph = new PunchCardGraph( user );
 
-      function setGraphRange( ui ) {
-        var minPercent = ui.values[0]/10000,
-            maxPercent = ui.values[1]/10000,
-            iMin = graph.getTotalMax() - Math.floor( graph.getTotalMax() * minPercent ),
-            iMax = graph.getTotalMax() - Math.floor( graph.getTotalMax() * maxPercent );
-
-        graph.setRange( iMax, iMin );
-      }
-
-      if( typeof(globalSliderUI) != "undefined" )
-        setGraphRange( globalSliderUI )
-
       // Override the global function to get the slider label's text
       globalGetDateRangeText = function() {
         var range = graph.getRange(),
@@ -65,8 +53,16 @@ function(app, Backbone, Repo) {
 
       // Override the global on slide function
       globalOnSlide = function( event, ui ) {
-        setGraphRange( ui );
+        var minPercent = ui.values[0]/10000,
+            maxPercent = ui.values[1]/10000,
+            iMin = graph.getTotalMax() - Math.floor( graph.getTotalMax() * minPercent ),
+            iMax = graph.getTotalMax() - Math.floor( graph.getTotalMax() * maxPercent );
+
+        graph.setRange( iMax, iMin );
       }
+
+      var rangeText = globalGetDateRangeText();
+      $( "#amount" ).val( rangeText );
 
     }
   });
