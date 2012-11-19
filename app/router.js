@@ -4,10 +4,11 @@ define([
 
   // Modules.
   "modules/punchcard",
-  "modules/user"
+  "modules/user",
+  "modules/timeline"
 ],
 
-function(app, PunchCard, User) {
+function(app, PunchCard, User, TimeLine) {
   var globalCommitterInfo,
       globalUserName;
 
@@ -61,7 +62,12 @@ function(app, PunchCard, User) {
           name: userName,
           branch: branch
       });
-
+/*
+      var timelineItem = new TimeLine.Model( {
+        committerInfo:globalCommitterInfo,
+        name: globalUserName || "all:commits"
+      });
+*/
       // Use main layout and set Views.
       if( typeof(globalCommitterInfo) != "undefined" ) {
         var collections = {
@@ -71,9 +77,11 @@ function(app, PunchCard, User) {
           branch:"master"
         };
 
+        // Use main layout and set Views.
         app.useLayout().setViews({
-          ".users": new User.Views.List(collections),
-          ".punchcard": new PunchCard.Views.Item({model:punchCardItem})
+          ".users" : new User.Views.List(collections),
+ //         ".timeline" : new TimeLine.Views.Item({model:timelineItem}),
+          ".punchcard" : new PunchCard.Views.Item({model:punchCardItem})
         }).render();
       }
     },
@@ -117,16 +125,21 @@ function(app, PunchCard, User) {
           committerInfo:globalCommitterInfo,
           name: globalUserName || "all:commits"
         });
-
+/*
+        var timelineItem = new TimeLine.Model( {
+          committerInfo:globalCommitterInfo,
+          name: globalUserName || "all:commits"
+        });
+*/
         // Use main layout and set Views.
         app.useLayout().setViews({
-          ".users": new User.Views.List(collections),
-          ".punchcard": new PunchCard.Views.Item({model:punchCardItem})
+          ".users" : new User.Views.List(collections),
+//          ".timeline" : new TimeLine.Views.Item({model:timelineItem}),
+          ".punchcard" : new PunchCard.Views.Item({model:punchCardItem})
         }).render();
       }); // end on "repository info"
     }
   });
 
   return Router;
-
 });
