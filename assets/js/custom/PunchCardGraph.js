@@ -46,10 +46,15 @@ function PunchCardGraph( userInfo ) {
     	var iDay = Math.floor( (yLoc - BORDER_WIDTH) / yChunk ),
     		iHour = Math.floor( (xLoc - BORDER_WIDTH) / xChunk );
 
-        if( xLoc > BORDER_WIDTH && xLoc < _this.canvas.width - BORDER_WIDTH && yLoc > BORDER_WIDTH && yLoc < _this.canvas.height - BORDER_WIDTH )
-        	_this.toolTip.Show( event, _this.histogram[iDay][iHour] );
-    	else
-    		_this.toolTip.Hide( event );
+    	if( typeof(_this.histogram[iDay]) == "undefined" || typeof(_this.histogram[iDay][iHour]) == "undefined" ) 
+    		return;
+
+    	_this.toolTip.Show( event, _this.histogram[iDay][iHour] );
+
+	}
+
+	this.canvas.onmouseout = function(event) {
+		_this.toolTip.Hide( event );
 	}
 
 	// Initialize our amplutudes and histogram arrays
