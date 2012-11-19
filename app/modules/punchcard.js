@@ -43,8 +43,8 @@ function(app, Backbone, Repo) {
         var range = graph.getRange(),
             strMinValue = user.commitTimes[range.min],
             strMaxValue = user.commitTimes[range.max],
-            strMin = strMinValue.substring(0, 4) + " " + strMinValue.substring(11, 19),
-            strMax = strMaxValue.substring(0, 4) + " " + strMaxValue.substring(11, 19);
+            strMin = strMinValue.substring(2, 10) + " " + strMinValue.substring(11, 16),
+            strMax = strMaxValue.substring(2, 10) + " " + strMaxValue.substring(11, 16);
 
         return strMax + " - " + strMin;
       }
