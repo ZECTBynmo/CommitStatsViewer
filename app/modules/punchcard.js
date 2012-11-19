@@ -6,7 +6,9 @@ define([
   "backbone",
 
   // Modules
-  "modules/repo"
+  "modules/repo",
+
+  "http://code.jquery.com/ui/1.9.1/jquery-ui.js"
 ],
 
 function(app, Backbone, Repo) {
@@ -19,7 +21,7 @@ function(app, Backbone, Repo) {
 
   PunchCard.Views.Item = Backbone.View.extend({
     template: "punchcard/item",
-
+    el: '#punchcard',
     tagName: "div",
 
     data: function() {
@@ -58,6 +60,8 @@ function(app, Backbone, Repo) {
 
         graph.setRange( iMax, iMin );
       }
+
+      globalResetSlider();
     }
   });
 	
