@@ -34,9 +34,30 @@ function(app, Backbone, Repo) {
     afterRender: function() {
       var canvasElement = document.getElementById("mainCanvas");
 
-      var testUser = this.committerInfo[this.model.attributes.name];
+      var user = this.committerInfo[this.model.attributes.name];
 
-      var graph = new PunchCardGraph( testUser );
+      var graph = new PunchCardGraph( user );
+
+      // Override the global function to get the slider label's text
+      globalGetDateRangeText = function() {
+        var range = graph.getRange(),
+            strMinValue = user.commitTimes[range.min],
+            strMaxValue = user.commitTimes[range.max],
+            strMin = strMinValue.substring(0, 4) + " " + strMinValue.substring(11, 19),
+            strMax = strMaxValue.substring(0, 4) + " " + strMaxValue.substring(11, 19);
+
+        return strMax + " - " + strMin;
+      }
+
+      // Override the global on slide function
+      globalOnSlide = function( event, ui ) {
+        var minPercent = ui.values[0]/10000,
+            maxPercent = ui.values[1]/10000,
+            iMin = graph.getTotalMax() - Math.floor( graph.getTotalMax() * minPercent ),
+            iMax = graph.getTotalMax() - Math.floor( graph.getTotalMax() * maxPercent );
+
+        graph.setRange( iMax, iMin );
+      }
     }
   });
 	
