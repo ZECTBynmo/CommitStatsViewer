@@ -4,7 +4,7 @@ var git = require("gift"),
 
 io.set("log level",1);
 
-var repoPath = "D:/iZotope/.git";
+var repoPath = "C:/Projects/node-core-audio/.git";
 var repo = git( repoPath );
 console.log( "READING REPO " + repoPath );
 
@@ -52,6 +52,8 @@ var getCommitInfos = function( branchName, numCommits, startCommit, callback ) {
 			
 			var author = thisCommit.author,
 				time = thisCommit.committed_date;
+
+			//console.log( time );
 			
 			// We record user string identifiers as commitName:email
 			var userString = thisCommit.author.name + ":" + thisCommit.author.email;
@@ -94,14 +96,14 @@ function onError( error ) {
 }
 
 exports.init = function() {
-
+/*
 	io.sockets.on('connection', function (socket) {
 		socket.on('request repository info', function (data) {
 			console.log( "User requested repository info" );
 			socket.emit("repository info", {committerInfo: committerInfo} );
 		});
 	});
-
+*/
 	async.whilst(
 		function () { 
 			if( !stopFetching ) {

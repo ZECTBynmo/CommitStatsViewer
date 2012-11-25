@@ -5,23 +5,29 @@ define([
   // Modules.
   "modules/punchcard",
   "modules/user",
-  "modules/timeline"
+  "modules/timeline",
+  "modules/intro"
 ],
 
-function(app, PunchCard, User, TimeLine) {
+function(app, PunchCard, User, TimeLine, Intro) {
   var globalCommitterInfo,
       globalUserName;
 
   // Defining the application router, you can attach sub routers here.
   var Router = Backbone.Router.extend({
     routes: {
-      "": "index",
+      "": "intro",
       "branch/:name": "branch",
       "branch/:name": "branch",
       "branch/:name/user/:name": "punchcard"
     },
 
     index: function() {
+      // Reset the state and render.
+      this.reset();
+    },
+
+    intro: function() {
       // Reset the state and render.
       this.reset();
     },
@@ -62,12 +68,7 @@ function(app, PunchCard, User, TimeLine) {
           name: userName,
           branch: branch
       });
-/*
-      var timelineItem = new TimeLine.Model( {
-        committerInfo:globalCommitterInfo,
-        name: globalUserName || "all:commits"
-      });
-*/
+
       // Use main layout and set Views.
       if( typeof(globalCommitterInfo) != "undefined" ) {
         var collections = {
@@ -80,7 +81,6 @@ function(app, PunchCard, User, TimeLine) {
         // Use main layout and set Views.
         app.useLayout().setViews({
           ".users" : new User.Views.List(collections),
- //         ".timeline" : new TimeLine.Views.Item({model:timelineItem}),
           ".punchcard" : new PunchCard.Views.Item({model:punchCardItem})
         }).render();
       }
@@ -105,6 +105,13 @@ function(app, PunchCard, User, TimeLine) {
       var socket = io.connect('http://localhost:9002');
 
       socket.emit( "request repository info" );
+      var introItem = new Intro.Model({});
+
+      app.useLayout().setViews({
+        ".intro" : new Intro.Views.Item({model:introItem})
+      }).render();
+
+
 
       socket.on("repository info", function(data) { 
         globalCommitterInfo = data.committerInfo;
@@ -125,16 +132,10 @@ function(app, PunchCard, User, TimeLine) {
           committerInfo:globalCommitterInfo,
           name: globalUserName || "all:commits"
         });
-/*
-        var timelineItem = new TimeLine.Model( {
-          committerInfo:globalCommitterInfo,
-          name: globalUserName || "all:commits"
-        });
-*/
+
         // Use main layout and set Views.
         app.useLayout().setViews({
           ".users" : new User.Views.List(collections),
-//          ".timeline" : new TimeLine.Views.Item({model:timelineItem}),
           ".punchcard" : new PunchCard.Views.Item({model:punchCardItem})
         }).render();
       }); // end on "repository info"

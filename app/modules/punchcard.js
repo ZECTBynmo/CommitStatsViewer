@@ -27,6 +27,18 @@ function(app, Backbone, Repo) {
     data: function() {
       return { model: this.model };
     },
+
+    events: {
+      click: "changeUser"
+    },
+    
+    changeUser: function(ev) {
+      var model = this.model;
+      var branch = model.branch;
+      var name = model.name + ":" + model.email;
+
+      app.router.go("branch", branch, "user", name);
+    },
 	
     initialize: function( options ) {
       this.committerInfo = options.model.attributes.committerInfo;

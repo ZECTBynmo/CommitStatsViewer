@@ -2,8 +2,19 @@
 // configuration file, which you can learn more about here:
 // https://github.com/cowboy/grunt/blob/master/docs/configuring.md
 module.exports = function(grunt) {
-	var server = require("./server");
-	server.init();
+	var gitstats = require("gitstats"),
+      io = require('socket.io').listen(9002);
+
+  io.sockets.on('connection', function (socket) {
+    socket.on('request repository info', function (data) {
+      console.log( "User requested repository info" );
+
+      var committerInfo;
+      socket.emit("repository info", {committerInfo: committerInfo} );
+    });
+  });
+
+	//server.init();
 
   grunt.initConfig({
 
@@ -19,25 +30,6 @@ module.exports = function(grunt) {
       files: [
         "build/config.js", "app/**/*.js"
       ]
-    },
-	
-	// CONNECTION STUFF!! I have no idea what I'm doing!
-	serve: {
-      intermediate: { port: 3000 },
-      publish: { port: 3001 }
-    },
-  
-	connect: {
-      intermediate: {
-        port: 3000,
-        logs: 'dev',
-        dirs: true
-      },
-      publish: {
-        port: 3001,
-        logs: 'default',
-        dirs: true
-      }
     },
 
     // The jshint option for scripturl is set to lax, because the anchor

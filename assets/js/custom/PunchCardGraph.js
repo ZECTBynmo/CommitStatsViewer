@@ -181,7 +181,8 @@ PunchCardGraph.prototype.createHistogram = function() {
 
 		var time = new Date( this.commits[iCommit] );
 
-		var hour = time.getHours(),
+		var timezoneOffset = time.getTimezoneOffset(),
+			hour = time.getHours() - timezoneOffset/60,
 			day = time.getDay();
 
 		this.histogram[day][hour]++;
