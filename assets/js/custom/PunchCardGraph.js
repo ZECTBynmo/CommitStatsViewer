@@ -175,14 +175,14 @@ PunchCardGraph.prototype.initData = function() {
 PunchCardGraph.prototype.createHistogram = function() {
 	this.clearHistogram();
 
-	for( var iCommit=this.range.min; iCommit<this.range.max; ++iCommit ) {
+	for( var iCommit=this.range.min; iCommit<=this.range.max; ++iCommit ) {
 		if( typeof(this.commits[iCommit]) == "undefined" )
 			continue;
 
 		var time = new Date( this.commits[iCommit] );
 
 		var timezoneOffset = time.getTimezoneOffset(),
-			hour = time.getHours() - timezoneOffset/60,
+			hour = time.getHours(),
 			day = time.getDay();
 
 		this.histogram[day][hour]++;
