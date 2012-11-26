@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     socket.on('request repository info', function (data) {
       console.log( "User requested repository info" );
 
-      gitstats.analyzeLocalGitFile( "D:/Projects/gitstats", "master", false, function(committerInfo) {
+      gitstats.analyzeLocalGitFile( "D:/Projects/CommitStatsViewer", "master", false, function(committerInfo) {
         console.log( "Emitting committer info" );
         //console.log( committerInfo );
         socket.emit("repository info", {committerInfo: committerInfo} );
