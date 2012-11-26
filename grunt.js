@@ -5,11 +5,13 @@ module.exports = function(grunt) {
 	var gitstats = require("gitstats"),
       io = require('socket.io').listen(9002);
 
+  io.set("log level",1);
+
   io.sockets.on('connection', function (socket) {
     socket.on('request repository info', function (data) {
       console.log( "User requested repository info" );
 
-      gitstats.analyzeLocalGitFile( "D:/Projects/node-core-audio/", "master", false, function(committerInfo) {
+      gitstats.analyzeLocalGitFile( "D:/Projects/gitstats", "master", false, function(committerInfo) {
         console.log( "Emitting committer info" );
         //console.log( committerInfo );
         socket.emit("repository info", {committerInfo: committerInfo} );
