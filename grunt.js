@@ -9,8 +9,11 @@ module.exports = function(grunt) {
     socket.on('request repository info', function (data) {
       console.log( "User requested repository info" );
 
-      var committerInfo;
-      socket.emit("repository info", {committerInfo: committerInfo} );
+      gitstats.analyzeLocalGitFile( "D:/Projects/node-core-audio/", "master", false, function(committerInfo) {
+        console.log( "Emitting committer info" );
+        //console.log( committerInfo );
+        socket.emit("repository info", {committerInfo: committerInfo} );
+      });
     });
   });
 
